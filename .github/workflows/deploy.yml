@@ -68,9 +68,9 @@ jobs:
            REPOSITORY: example-node-app
            IMAGE_TAG: ${{ github.sha }}
            AWS_DEFAULT_REGION: us-east-1
-        run: |-
+        run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG 
         working-directory: ./nodeapp
       - name: Deploy Docker Image to EC2
         env:
