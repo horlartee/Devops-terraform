@@ -23,7 +23,7 @@ resource "aws_instance" "servernode" {
     host        = self.public_ip
     user        = "ubuntu"
     private_key = var.private_key
-    timeout     = []
+    timeout     = "4m"
   }
   tags = {
     "name" = "DeployVM"
@@ -50,7 +50,7 @@ resource "aws_security_group" "maingroup" {
   ingress = [
     {
       cidr_blocks      = ["0.0.0.0/0", ]
-      description      = ""
+      description      = "SSH"
       from_port        = 22
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
@@ -61,7 +61,7 @@ resource "aws_security_group" "maingroup" {
     },
     {
       cidr_blocks      = ["0.0.0.0/0", ]
-      description      = ""
+      description      = "HTTP"
       from_port        = 80
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
@@ -69,6 +69,17 @@ resource "aws_security_group" "maingroup" {
       security_groups  = []
       self             = false
       to_port          = 80
+    },
+     {
+      cidr_blocks      = ["0.0.0.0/0", ]
+      description      = "HTTPS"
+      from_port        = 443
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "tcp"
+      security_groups  = []
+      self             = false
+      to_port          = 443
     }
   ]
 }
