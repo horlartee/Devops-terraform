@@ -52,7 +52,7 @@ jobs:
         working-directory: ./terraform
 
   deploy-apps:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu
     needs: deploy-infra
     steps:
       - name: checkout
