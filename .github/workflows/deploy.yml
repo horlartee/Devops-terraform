@@ -14,9 +14,8 @@ env:
 
 jobs: 
   deploy-infra:
-    runs-on: ubuntu-latest
-    outputs: 
-      SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.instance_public_ip}}
+    runs-on: ubuntu-latest 
+      
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -57,11 +56,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: Set IP env variables
-        run : echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP}} >> $GITHUB_ENV
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      - run: echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }} >> $GITHUB_ENV
+
       - name: Build, push docker image
         env:
            REGISTRY: ${{ steps.login-ecr.outputs.registry }}
