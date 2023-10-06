@@ -14,8 +14,9 @@ env:
 
 jobs: 
   deploy-infra:
-    runs-on: ubuntu-latest 
-      
+    runs-on: ubuntu-latest
+    outputs: 
+      SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.instance_public_ip}}
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -56,11 +57,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+      - name: Set IP env variables
+        run : echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP}} >> $GITHUB_ENV
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - run: echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }} >> $GITHUB_ENV
-
       - name: Build, push docker image
         env:
            REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -77,9 +78,9 @@ jobs:
            REPOSITORY: example-node-app
            IMAGE_TAG: ${{ github.sha }}
            AWS_DEFAULT_REGION: us-east-1
-        uses: appleboy/ssh-action@v0.1.9
+        uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.SERVER_PUBLIC_IP }}
+          host: echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP}} >> $GITHUB_ENV
           username: ubuntu
           key: ${{ env.PRIVATE_SSH_KEY }}
           envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
