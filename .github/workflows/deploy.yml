@@ -86,6 +86,7 @@ jobs:
           envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
           script: |-
              sudo apt update
+             sudo ufw allow ssh
              sudo apt install docker.io -y
              sudo apt install awscli -y
              sudo $(aws ecr get-login --no-include-email --region us-east-1);
